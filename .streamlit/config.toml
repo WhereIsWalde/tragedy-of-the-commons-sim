@@ -1,0 +1,9 @@
+[theme]
+base = "dark"
+
+font = "sans-serif"
+headingFont = "serif"
+codeFont = "monospace"
+
+baseFontSize = 16
+baseFontWeight = 400
