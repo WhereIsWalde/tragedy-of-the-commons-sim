@@ -69,8 +69,9 @@ else:
                 my_production = st.session_state.game.player_choices[my_name]
                 my_emissions = st.session_state.game.player_emissions[my_name]
 
+                total_emissions = st.session_state.game.get_total_emissions()
+                total_base_utility = st.session_state.game.total_base_utility
                 mean_utility = st.session_state.game.get_mean_utility()
-                median_utility = st.session_state.game.get_median_utility()
                 total_utility = st.session_state.game.get_total_utility()
                 max_utility = st.session_state.game.get_theoretic_maximum_utility()
                 chart = util.get_choice_histogram(st.session_state.game.player_choices)
@@ -81,10 +82,12 @@ else:
                     with st.container(horizontal=True):
                         st.metric(label=f"Utility for {my_name}:", value=f"{my_utility:.2f} Utility", delta=f"{my_utility-mean_utility:.2f}")
                         st.metric(label=f"Mean Utility:", value=f"{mean_utility:.2f} Utility")
-                        st.metric(label=f"Median Utility:", value=f"{median_utility:.2f} Utility")
+                    with st.container(horizontal=True):
+                        st.metric(label=f"Total emissions:", value=f"{total_emissions}/{5*st.session_state.game.N} Tons")
+                        st.metric(label=f"Total utility lost:", value=f"{total_base_utility - (total_base_utility*st.session_state.game.emission_multiplier):.2f}/{total_base_utility} Utility")
                     with st.container(horizontal=True):
                         st.metric("Global utility:",value=f"{total_utility:.2f} Utility")
-                        st.metric("Theoretical maximum utility:", value=f"{max_utility:.2f} Utility")
+                        st.metric("Maximum global utility:", value=f"{max_utility:.2f} Utility")
                     st.plotly_chart(chart, use_container_width=True)
                     
 

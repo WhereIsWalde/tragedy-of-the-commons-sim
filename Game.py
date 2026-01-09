@@ -9,6 +9,8 @@ class Game:
         self.player_emissions: dict[str, int] = {}
 
         self.is_finished: bool = False
+        self.emission_multiplier: float = 1.0
+        self.total_base_utility: float = 0.0
 
     def add_player(self, factory_name: str, amount_produced: int):
         self.player_choices[factory_name] = amount_produced
@@ -25,6 +27,7 @@ class Game:
             return
         self.player_emissions = self.__compute_base_emissions(choices=self.player_choices)
         base_utilities: dict[str: float] = self.__compute_base_utilities(self.player_choices)
+        self.total_base_utility = sum(v for v in base_utilities.values())
         self.player_utilities = self.__compute_final_utilities(base_utilities = base_utilities, emissions=self.player_emissions)
         self.is_finished = True
 
@@ -36,6 +39,9 @@ class Game:
     
     def get_total_utility(self) -> float:
         return sum(v for v in self.player_utilities.values())
+    
+    def get_total_emissions(self) -> int:
+        return sum(v for v in self.player_emissions.values())
     
     def get_theoretic_maximum_utility(self) -> float:
         return self.N * 1.25
@@ -49,7 +55,8 @@ class Game:
         return {k: v for k,v in choices.items()}
     
     def __compute_emission_multiplier(self, emissions: dict[str, int]) -> float:
-        return (1-sum(e for e in emissions.values()) / (5 * self.N))
+        self.emission_multiplier = (1-sum(e for e in emissions.values()) / (5 * self.N))
+        return self.emission_multiplier
     
     def __compute_final_utilities(self, base_utilities: dict[str, int], emissions: dict[str, int]):
         C = self.__compute_emission_multiplier(emissions)
